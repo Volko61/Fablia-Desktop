@@ -22,11 +22,11 @@ nsis:
   deleteAppDataOnUninstall: false
   artifactName: Fablia-Setup-${version}-${arch}.${ext}
 # Microsoft Store package. The three identity values come from
-# Partner Center > Product identity; the defaults below are placeholders.
+# Partner Center > Product identity; CI overrides these three with repository variables.
 appx:
-  identityName: ${env.APPX_IDENTITY_NAME}
-  publisher: ${env.APPX_PUBLISHER}
-  publisherDisplayName: ${env.APPX_PUBLISHER_DISPLAY_NAME}
+  identityName: Volko61.Fablia
+  publisher: CN=Volko61
+  publisherDisplayName: Volko61
   applicationId: Fablia
   displayName: Fablia
   backgroundColor: "#00201f"
