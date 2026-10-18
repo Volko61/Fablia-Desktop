@@ -1,0 +1,82 @@
+name: Release
+
+# Push a tag like `v0.1.0` to build every package and publish a GitHub release.
+# Manual runs only produce downloadable workflow artifacts.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  # Microsoft Store identity: set these in Settings > Secrets and variables > Actions > Variables
+  # with the values from Partner Center > Product management > Product identity.
+  APPX_IDENTITY_NAME: ${{ vars.APPX_IDENTITY_NAME || 'Volko61.Fablia' }}
+  APPX_PUBLISHER: ${{ vars.APPX_PUBLISHER || 'CN=Volko61' }}
+  APPX_PUBLISHER_DISPLAY_NAME: ${{ vars.APPX_PUBLISHER_DISPLAY_NAME || 'Volko61' }}
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: windows,     os: windows-latest,  args: "--win" }
+          - { name: linux-x64,   os: ubuntu-latest,   args: "--linux --x64" }
+          - { name: linux-arm64, os: ubuntu-24.04-arm, args: "--linux --arm64" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run icons
+      - name: Build
+        run: npx electron-builder ${{ matrix.args }} --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          if-no-files-found: error
+          path: |
+            dist/*.exe
+            dist/*.appx
+            dist/*.AppImage
+            dist/*.blockmap
+            dist/latest*.yml
+
+  release:
+    name: Publish release
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        run: cd dist && sha256sum *.exe *.appx *.AppImage > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+
+  winget:
+    name: Update winget package
+    needs: release
+    if: github.ref_type == 'tag' && !contains(github.ref_name, '-')
+    runs-on: windows-latest
+    steps:
+      # Needs the package to already exist in microsoft/winget-pkgs (first version is submitted by hand)
+      # and a classic PAT with public_repo scope stored as the WINGET_TOKEN secret.
+      - uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: Volko61.Fablia
+          installers-regex: 'Setup.*\.exe$'
+          token: ${{ secrets.WINGET_TOKEN }}

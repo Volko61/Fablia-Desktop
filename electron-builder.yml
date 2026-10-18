@@ -1,0 +1,45 @@
+appId: fr.fablia.desktop
+productName: Fablia
+copyright: Fablia
+directories:
+  buildResources: build
+files:
+  - src/**
+  - build/icon.png
+publish:
+  provider: github
+  owner: Volko61
+  repo: Fablia-Desktop
+
+win:
+  icon: build/icon.png
+  target:
+    - { target: nsis, arch: [x64, arm64] }
+    - { target: appx, arch: [x64, arm64] }
+nsis:
+  oneClick: true
+  perMachine: false
+  deleteAppDataOnUninstall: false
+  artifactName: Fablia-Setup-${version}-${arch}.${ext}
+# Microsoft Store package. The three identity values come from
+# Partner Center > Product identity; the defaults below are placeholders.
+appx:
+  identityName: ${env.APPX_IDENTITY_NAME}
+  publisher: ${env.APPX_PUBLISHER}
+  publisherDisplayName: ${env.APPX_PUBLISHER_DISPLAY_NAME}
+  applicationId: Fablia
+  displayName: Fablia
+  backgroundColor: "#00201f"
+  languages: [fr-FR, en-US]
+  artifactName: Fablia-${version}-${arch}.${ext}
+
+linux:
+  syncDesktopName: true
+  icon: build/icon.png
+  category: Game
+  maintainer: Volko61 <volkovolko76@gmail.com>
+  synopsis: Interactive AI stories
+  target:
+    - { target: AppImage, arch: [x64, arm64] }
+appImage:
+  artifactName: Fablia-${version}-${arch}.${ext}
