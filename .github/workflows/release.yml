@@ -79,5 +79,5 @@ jobs:
       - uses: vedantmgoyal9/winget-releaser@v2
         with:
           identifier: Volko61.Fablia
-          installers-regex: 'Setup.*\.exe$'
+          installers-regex: 'Setup-.*-(x64|arm64)\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
