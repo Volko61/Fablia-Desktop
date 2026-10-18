@@ -25,9 +25,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: windows,     os: windows-latest,  args: '--win -c.appx.identityName="$env:APPX_IDENTITY_NAME" -c.appx.publisher="$env:APPX_PUBLISHER" -c.appx.publisherDisplayName="$env:APPX_PUBLISHER_DISPLAY_NAME"', shell: pwsh }
-          - { name: linux-x64,   os: ubuntu-latest,   args: "--linux --x64", shell: bash }
-          - { name: linux-arm64, os: ubuntu-24.04-arm, args: "--linux --arm64", shell: bash }
+          - { name: windows,     os: windows-latest,  args: '--win -c.appx.identityName="$APPX_IDENTITY_NAME" -c.appx.publisher="$APPX_PUBLISHER" -c.appx.publisherDisplayName="$APPX_PUBLISHER_DISPLAY_NAME"' }
+          - { name: linux-x64,   os: ubuntu-latest,   args: "--linux --x64" }
+          - { name: linux-arm64, os: ubuntu-24.04-arm, args: "--linux --arm64" }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -37,7 +37,7 @@ jobs:
       - run: npm ci
       - run: npm run icons
       - name: Build
-        shell: ${{ matrix.shell }}
+        shell: bash
         run: npx electron-builder ${{ matrix.args }} --publish never
       - uses: actions/upload-artifact@v4
         with:
