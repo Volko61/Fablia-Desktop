@@ -25,7 +25,7 @@ nsis:
 # Partner Center > Product identity; CI overrides these three with repository variables.
 appx:
   identityName: Volko61.Fablia
-  publisher: CN=Volko61
+  publisher: CN=E55D3D18-B371-4CC7-8134-C62E4F3F4441
   publisherDisplayName: Volko61
   applicationId: Fablia
   displayName: Fablia

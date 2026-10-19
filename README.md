@@ -46,3 +46,5 @@ release to your Store submission. The Store signs the package itself.
 ## License
 
 MIT
+
+Store listing: https://apps.microsoft.com/detail/9NKCGS852X4D

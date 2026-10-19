@@ -14,7 +14,7 @@ env:
   # Microsoft Store identity: set these in Settings > Secrets and variables > Actions > Variables
   # with the values from Partner Center > Product management > Product identity.
   APPX_IDENTITY_NAME: ${{ vars.APPX_IDENTITY_NAME || 'Volko61.Fablia' }}
-  APPX_PUBLISHER: ${{ vars.APPX_PUBLISHER || 'CN=Volko61' }}
+  APPX_PUBLISHER: ${{ vars.APPX_PUBLISHER || 'CN=E55D3D18-B371-4CC7-8134-C62E4F3F4441' }}
   APPX_PUBLISHER_DISPLAY_NAME: ${{ vars.APPX_PUBLISHER_DISPLAY_NAME || 'Volko61' }}
 
 jobs:
@@ -73,6 +73,7 @@ jobs:
     needs: release
     if: github.ref_type == 'tag' && !contains(github.ref_name, '-')
     runs-on: windows-latest
+    continue-on-error: true # stays red until WINGET_TOKEN is set
     steps:
       # Needs the package to already exist in microsoft/winget-pkgs (first version is submitted by hand)
       # and a classic PAT with public_repo scope stored as the WINGET_TOKEN secret.
